@@ -1,0 +1,8 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: none
+jwt:
+  secret: 17b37da4-cb81-41c1-af45-50b987a3f9ad
+  prefix: 'Bearer '
+  header: auth-token

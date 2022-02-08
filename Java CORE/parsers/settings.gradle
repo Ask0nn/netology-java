@@ -1,0 +1,5 @@
+rootProject.name = 'parsers'
+include 'csv-json'
+include 'xml-json'
+include 'json'
+

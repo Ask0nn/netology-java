@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  db:
+    container_name: postgres
+    image: postgres:9.6-alpine
+    environment:
+      - POSTGRES_DB=cloud_vault
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+    ports:
+      - 5433:5432
+  web:
+    container_name: cloud-vault
+    build: ./
+    ports:
+      - 8081:8081
+    command: ["./wait-for-postgres.sh", "db"]

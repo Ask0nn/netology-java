@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/cloud_vault
+    username: postgres
+    password: root
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+  servlet:
+    multipart:
+      max-file-size: 1GB
+      max-request-size: 1GB
+server:
+  servlet:
+    context-path: /cloud
+  port: 8081
+jwt:
+  secret: 17b37da4-cb81-41c1-af45-50b987a3f9ad
+  prefix: 'Bearer '
+  header: auth-token
+

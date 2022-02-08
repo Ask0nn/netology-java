@@ -1,0 +1,173 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-tables
+      author: Ask0n
+      dbms: "postgresql"
+      changes:
+        - sql:
+            sql: CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+        - createTable:
+            tableName: role
+            columns:
+              - column:
+                  name: id
+                  type: serial
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: role_id
+                    nullable: false
+              - column:
+                  name: role
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+        - insert:
+            tableName: role
+            columns:
+              - column:
+                  name: role
+                  value: ROLE_USER
+        - insert:
+            tableName: role
+            columns:
+              - column:
+                  name: role
+                  value: ROLE_ADMIN
+        - createTable:
+            tableName: user
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  defaultValue: uuid_generate_v4()
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: user_id
+                    nullable: false
+              - column:
+                  name: username
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: password
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: user_role
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  defaultValue: uuid_generate_v4()
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: user_role_id
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: UUID
+                  constraints:
+                    foreignKeyName: fk_urole_user_id
+                    referencedTableName: user
+                    referencedColumnNames: id
+                    onDelete: 'CASCADE'
+                    onUpdate: 'CASCADE'
+                    deleteCascade: true
+                    nullable: false
+              - column:
+                  name: role_id
+                  type: int
+                  constraints:
+                    foreignKeyName: fk_urole_role_id
+                    referencedTableName: role
+                    referencedColumnNames: id
+                    onDelete: 'CASCADE'
+                    onUpdate: 'CASCADE'
+                    deleteCascade: true
+                    nullable: false
+        - addUniqueConstraint:
+            tableName: user_role
+            columnNames: user_id, role_id
+        - createTable:
+            tableName: vault
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  defaultValue: uuid_generate_v4()
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: vault_id
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: UUID
+                  constraints:
+                    foreignKeyName: fk_vault_user_id
+                    referencedTableName: user
+                    referencedColumnNames: id
+                    onDelete: 'CASCADE'
+                    onUpdate: 'CASCADE'
+                    deleteCascade: true
+                    nullable: false
+              - column:
+                  name: filename
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: content_type
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: size
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: data
+                  type: bytea
+                  constraints:
+                    nullable: false
+              - column:
+                  name: deleted
+                  type: boolean
+                  defaultValue: 0
+                  constraints:
+                    nullable: false
+        - createTable:
+            tableName: jwt_tokens
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  defaultValue: uuid_generate_v4()
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: jwt_id
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: UUID
+                  constraints:
+                    foreignKeyName: fk_urole_user_id
+                    referencedTableName: user
+                    referencedColumnNames: id
+                    onDelete: 'CASCADE'
+                    onUpdate: 'CASCADE'
+                    deleteCascade: true
+                    nullable: false
+              - column:
+                  name: token
+                  type: text
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            tableName: jwt_tokens
+            columnNames: user_id
+        - sqlFile:
+            path: new-user.sql
